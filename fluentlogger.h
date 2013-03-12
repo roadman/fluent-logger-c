@@ -6,6 +6,7 @@
 #define __LIB_FLUENT_LOGGER_H__
 
 #include <sys/types.h>
+#include <msgpack.h>
 
 #define FLUENT_ERR  -1
 #define FLUENT_OK   0
@@ -17,14 +18,14 @@ extern "C" {
 typedef struct {
     char    *err;
     int      fd;
-} fluent_context_t
+} fluent_context_t;
 
 
 fluent_context_t    *fluent_connect(const char *ip, int port);
+#if 0
 fluent_context_t    *fluent_connect_unix(const char *path);
-
-int                  fluent_post(fluent_context_t *c, const char *tag, const char *data);
-
+#endif
+int                  fluent_post_json(fluent_context_t *, const char *, const char *);
 void                 fluent_free(fluent_context_t *c);
 
 #ifdef __cplusplus
