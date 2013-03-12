@@ -53,6 +53,42 @@ fluent_context_t *fluent_connect_unix(const char *path)
 }
 #endif
 
+static char     format[]    = "[ \"%s\", %d, %s ]";
+static size_t   format_size = sizeof(format);
+
+int fluent_post_json(fluent_context_t *c, const char *tag, const char *json)
+{
+
+    bool         rv     = FLUENT_OK;
+
+    char        *buf;
+
+    size_t       bufsz,
+                 datasz;
+
+    bufsz = format_size + strlen(tag) + strlen(json) + 64;
+    if((buf = malloc(bufsz)) == NULL)
+    {
+        return(FLUENT_ERR);
+    }
+
+    (void)memset(buf, 0, bufsz);
+
+    (void)snprintf(buf, bufsz, format, tag, time(0), json);
+
+    datasz = strlen(buf);
+
+    if(write(c->fd, buf, datasz) != datasz)
+    {
+        rv = FLUENT_ERR;
+    }
+
+    free(buf);
+
+    return(rv);
+}
+
+#if 0
 int fluent_post(fluent_context_t *c, const char *tag, const msgpack_object *data)
 {
 
@@ -63,12 +99,22 @@ int fluent_post(fluent_context_t *c, const char *tag, const msgpack_object *data
 
     msgpack_pack_array(pk, 3);
 
+    msgpack_pack_raw(pk, strlen(tag));
     msgpack_pack_raw_body(pk, tag, strlen(tag));
+    msgpack_pack_raw(pk, sizeof(int64_t));
     msgpack_pack_int64(pk, time(0));
-    msgpack_pack_object(pk, *data);
+    msgpack_pack_raw(pk, data->size);
+    msgpack_pack_raw_body(pk, data->data, data->size);
 
-    // buffer->data
-    // buffer->size
+    msgpack_unpacked msg;
+    msgpack_unpacked_init(&msg);
+    bool success = msgpack_unpack_next(&msg, buffer->data, buffer->size, NULL);
+
+    msgpack_object obj = msg.data;
+    msgpack_object_print(stdout, obj);
+
+    //char *aa = "[\"debug.test\", 0, { \"test\":\"log\"}]";
+    //if(write(c->fd, aa, strlen(aa)) != buffer->size)
     if(write(c->fd, buffer->data, buffer->size) != buffer->size)
     {
         rv = FLUENT_ERR;
@@ -79,6 +125,7 @@ int fluent_post(fluent_context_t *c, const char *tag, const msgpack_object *data
 
     return(rv);
 }
+#endif
 
 void fluent_free(fluent_context_t *c)
 {

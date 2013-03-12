@@ -24,10 +24,10 @@ $S:	$(OBJS)
 	ar rv $@ $(OBJS)
 
 clean:
-	rm -f $(OBJS) $T $S 
+	rm -f $(OBJS) $T $S test
 
 test:
-	gcc -g -Wall fluentlogger-test.c -o fluentlogger-test $(LINKS)
+	gcc -g -Wall test.c -o test $(LINKS)
 
 install:
 	cp -p $T $S /usr/lib64/
