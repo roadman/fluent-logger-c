@@ -25,7 +25,6 @@ fluent_context_t    *fluent_connect(const char *ip, int port);
 #if 0
 fluent_context_t    *fluent_connect_unix(const char *path);
 #endif
-//int                  fluent_post(fluent_context_t *c, const char *tag, const msgpack_object *);
 int                  fluent_post_json(fluent_context_t *, const char *, const char *);
 void                 fluent_free(fluent_context_t *c);
 
