@@ -5,7 +5,7 @@
 
 int main()
 {
-    fluent_context_t *c = fluent_connect("127.0.0.1", 24224);
+    fluent_context_t *c = fluent_connect("127.0.0.1", 24225);
     if(c == NULL)
     {
         printf("connect error\n");
