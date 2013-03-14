@@ -2,9 +2,9 @@
 
 ## Install
 
- $ cd fluent-logger-c
- $ make
- $ sudo make install
+    $ cd fluent-logger-c
+    $ make
+    $ sudo make install
 
 ## Quickstart
 
