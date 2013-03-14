@@ -11,7 +11,6 @@
 #include <netdb.h>
 #include <time.h>
 #include <unistd.h>
-#include <msgpack.h>
 
 #include "fluentlogger.h"
 
@@ -63,7 +62,7 @@ static size_t   format_size = sizeof(format);
 int fluent_post_json(fluent_context_t *c, const char *tag, const char *json)
 {
 
-    bool         rv     = FLUENT_OK;
+    int          rv     = FLUENT_OK;
 
     char        *buf;
 

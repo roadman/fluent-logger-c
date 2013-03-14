@@ -6,7 +6,6 @@
 #define __LIB_FLUENT_LOGGER_H__
 
 #include <sys/types.h>
-#include <msgpack.h>
 
 #define FLUENT_ERR  -1
 #define FLUENT_OK   0
