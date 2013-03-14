@@ -31,7 +31,11 @@ fluent_context_t *fluent_connect(const char *ip, int port)
         return(NULL);
     }
 
-    fluent_context_connect_tcp(c, ip, port);
+    if(fluent_context_connect_tcp(c, ip, port) != FLUENT_OK)
+    {
+        free(c);
+        return(NULL);
+    }
 
     return(c);
 }
@@ -123,12 +127,16 @@ static fluent_context_t *fluent_context_init(void)
 
 static int fluent_context_connect_tcp(fluent_context_t *c, const char *addr, int port)
 {
-    int                  s,
-                         rv = FLUENT_ERR;
+    int                  s, rv;
     char                 _port[6];
     struct addrinfo      hints,
                         *servinfo,
                         *p;
+
+    if(c == NULL)
+    {
+        return(FLUENT_ERR);
+    }
 
     (void)snprintf(_port, sizeof(_port), "%d", port);
     memset(&hints, 0, sizeof(hints));
@@ -136,12 +144,12 @@ static int fluent_context_connect_tcp(fluent_context_t *c, const char *addr, int
     hints.ai_family   = AF_INET;
     hints.ai_socktype = SOCK_STREAM;
 
-    if((rv = getaddrinfo(addr, _port, &hints, &servinfo)) != 0)
+    if(getaddrinfo(addr, _port, &hints, &servinfo) != 0)
     {
-        return(FLUENT_OK);
+        return(FLUENT_ERR);
     }
 
-    for(p = servinfo; p != NULL; p = p->ai_next)
+    for(p = servinfo, rv = FLUENT_ERR; p != NULL; p = p->ai_next)
     {
         s = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
         if(s == -1)

@@ -7,7 +7,8 @@ MYLIB= $(MYNAME)
 T= lib$(MYLIB).so
 S= lib$(MYLIB).a
 OBJS= $(MYLIB).o
-LINKS=-lfluentlogger -L. -lmsgpack
+LINKS=-lfluentlogger -L.
+#LINKS=-lfluentlogger
 
 all:	$T $S 
 
